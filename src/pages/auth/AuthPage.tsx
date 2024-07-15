@@ -3,6 +3,7 @@ import Image from "next/image";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import { UserLogin, UserRegister } from "../../../types/types";
+import { signIn } from "next-auth/react";
 const AuthPage = () => {
   const handleRegisterSubmit = (data: UserRegister) => {
     const payload = {
@@ -14,10 +15,21 @@ const AuthPage = () => {
   };
 
   const handleLoginSubmit = (data: UserLogin) => {
-    const payload = {
-      ...data,
-    };
-    console.log(payload);
+    signIn("credentials", {
+      email: data?.loginType === "EMAIL" ? data?.email : undefined,
+      phone: data?.loginType === "PHONE" ? data?.phone : undefined,
+      password: data.pin,
+      loginType: data?.loginType,
+      redirect: false,
+      callbackUrl: "/",
+    }).then((res) => {
+      // if (res?.error) {
+      //   toast.error("Invalid Credentials");
+      // } else if (res?.ok) {
+      //   toast.success("Login Successfully!");
+      //   router.push("/dashboard");
+      // }
+    });
   };
   return (
     <div className="flex flex-col md:flex-row h-screen">
