@@ -3,7 +3,7 @@ export type UserRegister = {
   email: string;
   phone: string;
   pin: number;
-  confirmPin: number;
+  confirmPin?: number;
   type: "USER" | "AGENT";
 };
 

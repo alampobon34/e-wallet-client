@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { UserRegister } from "../../../types/types";
 
 interface Props {
-  onFormSubmit: (data: UserRegister) => void;
+  onFormSubmit: (data: UserRegister) => any;
 }
 const RegisterForm = ({ onFormSubmit }: Props) => {
   const {
@@ -124,7 +124,7 @@ const RegisterForm = ({ onFormSubmit }: Props) => {
                   value: true,
                   message: "Confirm Pin is required!",
                 },
-                validate: (value) => handleValidate(value, true),
+                validate: (value) => handleValidate(value ?? "", true),
               })}
             />
           </FormGroupLayout>

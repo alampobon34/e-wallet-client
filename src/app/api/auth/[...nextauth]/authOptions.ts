@@ -13,47 +13,54 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials, req) {
-        console.log(credentials);
-        // const url = "http://localhost:8000/api/auth/login/";
-        // const response = await fetch(url, {
-        //   method: "POST",
-        //   body: JSON.stringify({
-        //     email: credentials?.email,
-        //     password: credentials?.password,
-        //   }),
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Accept: "application/json",
-        //   },
-        // });
-        // const data = await response.json();
-        // console.log("data", data);
-        // if (data?.status === 200 && data?.user) {
-        //   return data.user;
-        // }
+        const url = process.env.BASE_URL + "/login";
+        const response = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({
+            email: credentials?.email,
+            password: credentials?.password,
+            phone: credentials?.phone,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        const data = await response.json();
+        if (data?.status === 200 && data?.user) {
+          return data.user;
+        }
         return null;
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, session }) {
+    async signIn({ user }) {
+      return true;
+    },
+    async jwt({ token, user }) {
       if (user) {
+        token.id = user._id;
+        token.name = user.name;
+        token.email = user.email;
+        token.phone = user.phone;
+        token.balance = user.balance;
+        token.type = user.type;
+        token.active = user.active;
         token.accessToken = user.accessToken;
-        token.id = user.id;
       }
       return token;
     },
-    async session({ session, user, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          accessToken: token.accessToken as string,
-          refreshToken: token.refreshToken as string,
-          id: token.id,
-        },
-        error: token.error,
-      };
+    async session({ session, token, user }) {
+      session.user._id = token.id;
+      session.user.name = token.name as string;
+      session.user.email = token.email as string;
+      session.user.phone = token.phone as number;
+      session.user.balance = token.balance as number;
+      session.user.type = token.type as "USER" | "AGENT" | "ADMIN";
+      session.user.active = token.active as "YES" | "NO";
+      session.user.accessToken = token.accessToken as string;
+      return session;
     },
   },
 };

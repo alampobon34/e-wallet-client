@@ -4,14 +4,39 @@ import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import { UserLogin, UserRegister } from "../../../types/types";
 import { signIn } from "next-auth/react";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/services/axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const AuthPage = () => {
-  const handleRegisterSubmit = (data: UserRegister) => {
+  const router = useRouter();
+  const { mutateAsync } = useMutation({
+    mutationFn: async (payload: UserRegister) => {
+      const { data } = await api.post(`/register`, payload);
+      return data;
+    },
+    onSuccess: (data) => {
+      console.log("Data Saved Successfully", data);
+      if (data?.status === 201) {
+        toast.success("User Registered Successfully!");
+      }
+      if (data?.status === 422) {
+        toast.error(data?.message);
+      }
+    },
+    onError: async (error) => {
+      toast.error(error?.message);
+    },
+  });
+
+  const handleRegisterSubmit = async (data: UserRegister) => {
     const payload = {
       ...data,
       balance: 0,
       active: "NO",
     };
-    console.log(payload);
+    delete payload?.confirmPin;
+    await mutateAsync(payload);
   };
 
   const handleLoginSubmit = (data: UserLogin) => {
@@ -23,12 +48,12 @@ const AuthPage = () => {
       redirect: false,
       callbackUrl: "/",
     }).then((res) => {
-      // if (res?.error) {
-      //   toast.error("Invalid Credentials");
-      // } else if (res?.ok) {
-      //   toast.success("Login Successfully!");
-      //   router.push("/dashboard");
-      // }
+      if (res?.error) {
+        toast.error("Invalid Credentials");
+      } else if (res?.ok) {
+        toast.success("Login Successfully!");
+        router.push("/dashboard");
+      }
     });
   };
   return (
