@@ -5,9 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { UserRegister } from "../../../types/types";
 
 interface Props {
+  isLoading: boolean;
   onFormSubmit: (data: UserRegister) => any;
 }
-const RegisterForm = ({ onFormSubmit }: Props) => {
+const RegisterForm = ({ onFormSubmit, isLoading }: Props) => {
   const {
     register,
     handleSubmit,
@@ -128,7 +129,13 @@ const RegisterForm = ({ onFormSubmit }: Props) => {
               })}
             />
           </FormGroupLayout>
-          <button className="btn btn-neutral">Register here</button>
+          <button disabled={isLoading} className="btn btn-neutral md:mb-10">
+            {isLoading ? (
+              <span className="loading loading-dots loading-md"></span>
+            ) : (
+              <span>Login here</span>
+            )}
+          </button>
         </FormLayout>
       </form>
     </>

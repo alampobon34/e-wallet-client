@@ -1,13 +1,13 @@
 "use client";
 import { useSession } from "next-auth/react";
-const page = () => {
+const Dashboard = () => {
   const { data: session } = useSession();
   console.log(session?.user?._id);
   return (
     <div>
-      <h1>{JSON.stringify(session)}</h1>
+      <h1 className="font-serif">from proteted {JSON.stringify(session)}</h1>
     </div>
   );
 };
 
-export default page;
+export default Dashboard;

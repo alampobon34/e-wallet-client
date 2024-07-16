@@ -8,17 +8,18 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "@/services/axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 const AuthPage = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useMutation({
     mutationFn: async (payload: UserRegister) => {
       const { data } = await api.post(`/register`, payload);
       return data;
     },
     onSuccess: (data) => {
-      console.log("Data Saved Successfully", data);
       if (data?.status === 201) {
-        toast.success("User Registered Successfully!");
+        toast.success(data?.message);
       }
       if (data?.status === 422) {
         toast.error(data?.message);
@@ -36,10 +37,13 @@ const AuthPage = () => {
       active: "NO",
     };
     delete payload?.confirmPin;
+    setIsLoading(true);
     await mutateAsync(payload);
+    setIsLoading(false);
   };
 
   const handleLoginSubmit = (data: UserLogin) => {
+    setIsLoading(true);
     signIn("credentials", {
       email: data?.loginType === "EMAIL" ? data?.email : undefined,
       phone: data?.loginType === "PHONE" ? data?.phone : undefined,
@@ -55,6 +59,7 @@ const AuthPage = () => {
         router.push("/dashboard");
       }
     });
+    setIsLoading(false);
   };
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -72,7 +77,7 @@ const AuthPage = () => {
             role="tabpanel"
             className="tab-content bg-base-100 border-base-300 rounded-box p-6 h-max"
           >
-            <LoginForm onFormSubmit={handleLoginSubmit} />
+            <LoginForm isLoading={isLoading} onFormSubmit={handleLoginSubmit} />
           </div>
 
           <input
@@ -86,7 +91,10 @@ const AuthPage = () => {
             role="tabpanel"
             className="tab-content bg-base-100 border-base-300 rounded-box p-6"
           >
-            <RegisterForm onFormSubmit={handleRegisterSubmit} />
+            <RegisterForm
+              isLoading={isLoading}
+              onFormSubmit={handleRegisterSubmit}
+            />
           </div>
         </div>
       </div>
