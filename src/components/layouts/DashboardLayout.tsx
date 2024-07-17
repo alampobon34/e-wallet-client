@@ -8,11 +8,9 @@ interface Props {
 const DashboardLayout = ({ children }: Props) => {
   return (
     <div>
-      <div className="max-w-7xl mx-auto">
-        <Navbar />
-      </div>
+      <Navbar />
       <Sidebar />
-      {children}
+      <div className="mx-auto max-w-7xl px-4 md:px-0">{children}</div>
     </div>
   );
 };

@@ -1,43 +1,44 @@
 import React from "react";
-
+import { IoMdMenu } from "react-icons/io";
 const Navbar = () => {
   return (
-    <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
-      </div>
-      <div className="flex-none">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
+    <div className="bg-base-100 border-b sticky top-0 z-10">
+      <div className="navbar max-w-7xl mx-auto px-4 md:px-0">
+        <div className="flex-1">
+          <a className="font-semibold text-md">eWallet</a>
+        </div>
+        <div className="flex-none">
+          <label
+            htmlFor="my-drawer"
+            className="cursor-pointer drawer-button mr-2"
           >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
+            <IoMdMenu className="size-6" />
+          </label>
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-8 rounded-full">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
+                />
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <a>Settings</a>
+              </li>
+              <li>
+                <a>Logout</a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
