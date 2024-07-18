@@ -1,45 +1,18 @@
 "use client";
-
+import { ROUTES } from "@/data/routes";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
-interface Route {
-  id: number;
-  routeName: string;
-  path: string;
-  userType: "COMMON" | "AGENT" | "USER" | "ADMIN";
-}
-
-const ROUTES: Route[] = [
-  {
-    id: 1,
-    routeName: "Dashboard",
-    path: "/dashboard",
-    userType: "COMMON",
-  },
-  {
-    id: 1,
-    routeName: "Dashboard 2",
-    path: "/dashboard",
-    userType: "ADMIN",
-  },
-  {
-    id: 1,
-    routeName: "Dashboard 3",
-    path: "/dashboard",
-    userType: "AGENT",
-  },
-  {
-    id: 1,
-    routeName: "Dashboard 4",
-    path: "/dashboard",
-    userType: "USER",
-  },
-];
 const Sidebar = () => {
   const { data: session } = useSession();
   const userType = session?.user.type;
   const routeList = [
-    ...ROUTES.filter((r) => r.userType === "COMMON" || r.userType === userType),
+    ...ROUTES.filter(
+      (r) =>
+        r.userType === "COMMON" ||
+        r.userType === "USER_AND_AGENT" ||
+        r.userType === userType
+    ),
   ];
   return (
     <div className="drawer z-20">
@@ -52,7 +25,9 @@ const Sidebar = () => {
         ></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
           {routeList?.map((item) => (
-            <li key={item.id}>{item.routeName}</li>
+            <li key={item.id}>
+              <Link href={item.path}>{item.routeName}</Link>
+            </li>
           ))}
         </ul>
       </div>

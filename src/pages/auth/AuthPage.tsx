@@ -3,13 +3,15 @@ import Image from "next/image";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import { UserLogin, UserRegister } from "../../../types/types";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { api } from "@/services/axios";
+import { api, apiSecure } from "@/services/axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Cookies from "js-cookie";
 const AuthPage = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useMutation({
@@ -51,10 +53,12 @@ const AuthPage = () => {
       loginType: data?.loginType,
       redirect: false,
       callbackUrl: "/",
-    }).then((res) => {
+    }).then(async (res) => {
       if (res?.error) {
         toast.error("Invalid Credentials");
       } else if (res?.ok) {
+        const response = await apiSecure.post("/jwt", { email: data?.email });
+        console.log(response);
         toast.success("Login Successfully!");
         router.push("/dashboard");
       }

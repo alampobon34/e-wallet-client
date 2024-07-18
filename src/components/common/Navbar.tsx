@@ -1,6 +1,22 @@
+"use client";
+import { apiSecure } from "@/services/axios";
+import { signOut, useSession } from "next-auth/react";
 import React from "react";
+import toast from "react-hot-toast";
 import { IoMdMenu } from "react-icons/io";
 const Navbar = () => {
+  const { data: sesson } = useSession();
+  const handleLogout = () => {
+    apiSecure
+      .get("/logout")
+      .then((res) => {
+        if (res.data?.success) {
+          signOut();
+          toast.success("Signout Successfully!");
+        }
+      })
+      .catch((err) => toast.error("Something went wrong!"));
+  };
   return (
     <div className="bg-base-100 border-b sticky top-0 z-10">
       <div className="navbar max-w-7xl mx-auto px-4 md:px-0">
@@ -31,11 +47,13 @@ const Navbar = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
-              <li>
-                <a>Settings</a>
+              <li className="pointer-events-none">
+                <a>{sesson?.user && <span>{sesson?.user?.name}</span>}</a>
               </li>
               <li>
-                <a>Logout</a>
+                <button type="button" onClick={handleLogout}>
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
